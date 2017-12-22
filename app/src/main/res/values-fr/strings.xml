@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="READ_FILE">Lire le fichier</string>
+    <string name="READ_FILE_BUTTON">Lire le fichier</string>
+    <string name="TEST_MESSAGE">Bonjour Bleep</string>
+    <string name="READ_FILE_BUTTON_TIP">Lisez le fichier CSV Produits dans la base de données.</string>
 </resources>

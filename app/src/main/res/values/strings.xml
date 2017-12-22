@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">Test</string>
-    <string name="READ_FILE">Read File</string>
+    <string name="READ_FILE_BUTTON">Read File</string>
+    <string name="TEST_MESSAGE">Hello Bleep</string>
+    <string name="READ_FILE_BUTTON_TIP">Read the file</string>
 </resources>

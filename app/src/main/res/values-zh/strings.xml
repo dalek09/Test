@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="READ_FILE">读取文件</string>
+    <string name="READ_FILE_BUTTON">读取文件</string>
+    <string name="TEST_MESSAGE">你好 Bleep</string>
+    <string name="READ_FILE_BUTTON_TIP">将产品CSV文件读入数据库。</string>
 </resources>
