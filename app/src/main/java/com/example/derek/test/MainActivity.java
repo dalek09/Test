@@ -17,14 +17,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-    public void readFile(View v) {
+    public void readFile(View v) throws IOException {
         String myFolderName =  getExternalStorageDirectory() + "/Derek/";
         String myFileName = "Bleep.CSV";
 
         // if the folder doesn't exist, create it
         if(!dir_exists(myFolderName)) {
             File dir = new File(myFolderName);
-            dir.mkdirs();
+            if(!dir.mkdirs())
+                throw new IOException("Cannot make directory: " + myFolderName);
         }
 
         String fullName = myFolderName + myFileName;
