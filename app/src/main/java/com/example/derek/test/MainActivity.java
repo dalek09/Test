@@ -17,6 +17,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
+
+    public void getFile(View v) throws IOException {
+        //http://bleepcomputing.com/demo/TOLOrder-20171215-0010000003.CSV
+    }
+
     public void readFile(View v) throws IOException {
         String myFolderName =  getExternalStorageDirectory() + "/Derek/";
         String myFileName = "Bleep.CSV";
