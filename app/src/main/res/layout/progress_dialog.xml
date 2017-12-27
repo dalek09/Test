@@ -11,7 +11,7 @@
         android:id="@+id/tv1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#FFF"
+        android:textColor="@color/progressTextMain"
         android:text="hello"
         android:textStyle="bold"
         />
@@ -20,7 +20,7 @@
         android:id="@+id/cur_pg_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#0F0"
+        android:textColor="@color/progressTextURL"
         android:text="hello"
         android:layout_marginTop="5dp"
         android:textStyle="bold|italic"    />

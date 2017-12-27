@@ -11,4 +11,8 @@
     <color name="greenStart">#3a7814</color>
     <color name="greenMid">#5ca72e</color>
     <color name="greenEnd">#adf283</color>
+
+    <color name="progressTextMain">#170399</color>
+    <color name="progressTextURL">#378df1</color>
+
 </resources>

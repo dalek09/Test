@@ -8,9 +8,13 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
@@ -28,7 +32,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getFile(View v) throws IOException {
-        String strURL = "http://bleepcomputing.com/demo/TOLOrder-20171215-0010000003.CSV";
+        String urlBleep = "http://bleepcomputing.com/demo/TOLOrder-20171215-0010000003.CSV";
+        showProgress(urlBleep);
+        try {
+            URL url = new URL(urlBleep);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setDoOutput(true);
+
+            //connect
+            urlConnection.connect();
+        } catch (final MalformedURLException e) {
+            showError("Error : MalformedURLException " + e);
+            e.printStackTrace();
+        } catch (final IOException e) {
+            showError("Error : IOException " + e);
+            e.printStackTrace();
+        }
+        catch (final Exception e) {
+            showError("Error : Please check your internet connection " + e);
+        }
     }
 
     public void readFile(View v) throws IOException {
@@ -59,6 +83,14 @@ public class MainActivity extends AppCompatActivity {
             ret = true;
         }
         return ret;
+    }
+
+    void showError(final String err){
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(MainActivity.this, err, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     void showProgress(String file_path) {
