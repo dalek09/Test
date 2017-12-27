@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -43,6 +44,12 @@ public class MainActivity extends AppCompatActivity {
 
             //connect
             urlConnection.connect();
+            //set the path where we want to save the file
+            File SDCardRoot = Environment.getExternalStorageDirectory();
+            //create a new file, to save the downloaded file
+            File file = new File(SDCardRoot,"downloaded_file.png");
+            FileOutputStream fileOutput = new FileOutputStream(file);
+
         } catch (final MalformedURLException e) {
             showError("Error : MalformedURLException " + e);
             e.printStackTrace();
