@@ -1,7 +1,11 @@
 package com.example.derek.test;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +17,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,9 +38,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getFile(View v) throws IOException {
+
+        if(!isExternalStorageWritable())
+            showError("External Storage is not writable");
+
+        if(!hasExternalStoragePermission())
+            showError("No External Storage permission");
+
         String urlBleep = "http://bleepcomputing.com/demo/TOLOrder-20171215-0010000003.CSV";
         showProgress(urlBleep);
         try {
+            //create a buffer...
+            byte[] buffer = new byte[1024];
+            int bufferLength = 0;
+
+            //set the path where we want to save the file
+//            File SDCardRoot = Environment.getExternalStorageDirectory();
+//            File derekDir = new File(SDCardRoot, "Derek/");
+//            //create a new file, to save the downloaded file
+//            File file = new File(derekDir,"downloaded_file.csv");
+//            FileOutputStream fileOutput = new FileOutputStream(file);
+
+            //FileOutputStream fileOutput = new FileOutputStream("Test.csv", Context.MODE_PRIVATE);
+            FileOutputStream fileOutput = openFileOutput("Test.csv", Context.MODE_PRIVATE);
+            //setup the URL to download
             URL url = new URL(urlBleep);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -44,14 +70,43 @@ public class MainActivity extends AppCompatActivity {
 
             //connect
             urlConnection.connect();
-            //set the path where we want to save the file
-            File SDCardRoot = Environment.getExternalStorageDirectory();
-            //create a new file, to save the downloaded file
-            File file = new File(SDCardRoot,"downloaded_file.png");
-            FileOutputStream fileOutput = new FileOutputStream(file);
 
+            //Stream used for reading the data from the internet
+            InputStream inputStream = urlConnection.getInputStream();
+
+            //this is the total size of the file which we are downloading
+            totalSize = urlConnection.getContentLength();
+
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    progressBar.setMax(totalSize);
+                }
+            });
+
+            while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
+                fileOutput.write(buffer, 0, bufferLength);
+                downloadedSize += bufferLength;
+                // update the progressbar //
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        progressBar.setProgress(downloadedSize);
+                        float per = ((float)downloadedSize/totalSize) * 100;
+                        cur_val.setText("Downloaded " + downloadedSize + "KB / " + totalSize + "KB (" + (int)per + "%)" );
+                    }
+                });
+            }
+            //close the output stream when complete //
+            fileOutput.close();
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    // pb.dismiss(); // if you want close it..
+                }
+            });
         } catch (final MalformedURLException e) {
             showError("Error : MalformedURLException " + e);
+            e.printStackTrace();
+        } catch (final SecurityException e) {
+            showError("Error : SecurityException " + e);
             e.printStackTrace();
         } catch (final IOException e) {
             showError("Error : IOException " + e);
@@ -90,6 +145,20 @@ public class MainActivity extends AppCompatActivity {
             ret = true;
         }
         return ret;
+    }
+
+    private boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasExternalStoragePermission() {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            return true;
+        else return false;
     }
 
     void showError(final String err){
