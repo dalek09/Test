@@ -39,82 +39,32 @@ public class MainActivity extends AppCompatActivity {
 
     public void getFile(View v) throws IOException {
 
-        if(!isExternalStorageWritable())
+        if (!isExternalStorageWritable()){
             showError("External Storage is not writable");
-
-        if(!hasExternalStoragePermission())
+            return;
+        }
+        if (!hasExternalStoragePermission()){
             showError("No External Storage permission");
+            return;
+        }
 
-        String urlBleep = "http://bleepcomputing.com/demo/TOLOrder-20171215-0010000003.CSV";
+        final String urlBleep = "http://bleepcomputing.com/demo/TOLOrder-20171215-0010000003.CSV";
         showProgress(urlBleep);
-        try {
-            //create a buffer...
-            byte[] buffer = new byte[1024];
-            int bufferLength = 0;
 
-            //set the path where we want to save the file
-//            File SDCardRoot = Environment.getExternalStorageDirectory();
-//            File derekDir = new File(SDCardRoot, "Derek/");
-//            //create a new file, to save the downloaded file
-//            File file = new File(derekDir,"downloaded_file.csv");
-//            FileOutputStream fileOutput = new FileOutputStream(file);
+        //Runnable bad = new Runnable();
 
-            //FileOutputStream fileOutput = new FileOutputStream("Test.csv", Context.MODE_PRIVATE);
-            FileOutputStream fileOutput = openFileOutput("Test.csv", Context.MODE_PRIVATE);
-            //setup the URL to download
-            URL url = new URL(urlBleep);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-            urlConnection.setRequestMethod("GET");
-            urlConnection.setDoOutput(true);
-
-            //connect
-            urlConnection.connect();
-
-            //Stream used for reading the data from the internet
-            InputStream inputStream = urlConnection.getInputStream();
-
-            //this is the total size of the file which we are downloading
-            totalSize = urlConnection.getContentLength();
-
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    progressBar.setMax(totalSize);
-                }
-            });
-
-            while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
-                fileOutput.write(buffer, 0, bufferLength);
-                downloadedSize += bufferLength;
-                // update the progressbar //
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        progressBar.setProgress(downloadedSize);
-                        float per = ((float)downloadedSize/totalSize) * 100;
-                        cur_val.setText("Downloaded " + downloadedSize + "KB / " + totalSize + "KB (" + (int)per + "%)" );
-                    }
-                });
+        Runnable me = new Runnable() {
+            public void run() {
+                downloadFile(urlBleep);
             }
-            //close the output stream when complete //
-            fileOutput.close();
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    // pb.dismiss(); // if you want close it..
-                }
-            });
-        } catch (final MalformedURLException e) {
-            showError("Error : MalformedURLException " + e);
-            e.printStackTrace();
-        } catch (final SecurityException e) {
-            showError("Error : SecurityException " + e);
-            e.printStackTrace();
-        } catch (final IOException e) {
-            showError("Error : IOException " + e);
-            e.printStackTrace();
-        }
-        catch (final Exception e) {
-            showError("Error : Please check your internet connection " + e);
-        }
+        };
+
+        new Thread(me).start();
+//        new Thread(new Runnable() {
+//            public void run() {
+//                downloadFile(urlBleep);
+//            }
+//        }).start();
     }
 
     public void readFile(View v) throws IOException {
@@ -186,4 +136,74 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setProgressDrawable(getResources().getDrawable(R.drawable.green_progress));
     }
 
+    void downloadFile(String strURL) {
+        try {
+            //create a buffer...
+            byte[] buffer = new byte[1024];
+            int bufferLength = 0;
+
+            //set the path where we want to save the file
+//            File SDCardRoot = Environment.getExternalStorageDirectory();
+//            File derekDir = new File(SDCardRoot, "Derek/");
+//            //create a new file, to save the downloaded file
+//            File file = new File(derekDir,"downloaded_file.csv");
+//            FileOutputStream fileOutput = new FileOutputStream(file);
+
+            //FileOutputStream fileOutput = new FileOutputStream("Test.csv", Context.MODE_PRIVATE);
+            FileOutputStream fileOutput = openFileOutput("Test.csv", Context.MODE_PRIVATE);
+            //setup the URL to download
+            URL url = new URL(strURL);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setDoOutput(true);
+
+            //connect
+            urlConnection.connect();
+
+            //Stream used for reading the data from the internet
+            InputStream inputStream = urlConnection.getInputStream();
+
+            //this is the total size of the file which we are downloading
+            totalSize = urlConnection.getContentLength();
+
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    progressBar.setMax(totalSize);
+                }
+            });
+
+            while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
+                fileOutput.write(buffer, 0, bufferLength);
+                downloadedSize += bufferLength;
+                // update the progressbar //
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        progressBar.setProgress(downloadedSize);
+                        float per = ((float)downloadedSize/totalSize) * 100;
+                        cur_val.setText("Downloaded " + downloadedSize + "KB / " + totalSize + "KB (" + (int)per + "%)" );
+                    }
+                });
+            }
+            //close the output stream when complete //
+            fileOutput.close();
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    // pb.dismiss(); // if you want close it..
+                }
+            });
+        } catch (final MalformedURLException e) {
+            showError("Error : MalformedURLException " + e);
+            e.printStackTrace();
+        } catch (final SecurityException e) {
+            showError("Error : SecurityException " + e);
+            e.printStackTrace();
+        } catch (final IOException e) {
+            showError("Error : IOException " + e);
+            e.printStackTrace();
+        }
+        catch (final Exception e) {
+            showError("Error : Please check your internet connection " + e);
+        }
+    }
 }
