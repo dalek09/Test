@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.webkit.URLUtil;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,9 +29,9 @@ import static android.os.Environment.getExternalStorageDirectory;
 public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
     Dialog progressBox;
-    int downloadedSize = 0;
+    int downloadedSize;
     int totalSize = 0;
-    TextView cur_val;
+    TextView curVal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getFile(View v) throws IOException {
+        downloadedSize = 0;
 
         if (!isExternalStorageWritable()){
             showError("External Storage is not writable");
@@ -48,30 +51,38 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        final String urlBleep = "http://bleepcomputing.com/demo/TOLOrder-20171215-0010000003.CSV";
+        final String urlBleep = "http://bleepcomputing.com/devel/csv.csv";
         showProgress(urlBleep);
 
         //Runnable bad = new Runnable();
 
-        Runnable me = new Runnable() {
-            public void run() {
-                downloadFile(urlBleep);
-            }
-        };
-
-        new Thread(me).start();
-//        new Thread(new Runnable() {
+//        Runnable me = new Runnable() {    //lambda?
 //            public void run() {
 //                downloadFile(urlBleep);
 //            }
-//        }).start();
+//        };
+//
+//        new Thread(me).start();
+        new Thread(new Runnable() {
+            public void run() {
+                downloadFile(urlBleep);
+            }
+        }).start();
     }
 
     public void readFile(View v) throws IOException {
+        CSVParse csvp = new CSVParse();
+        //Reader r = new Reader();
+        //csvp.readLine(r);
+
         String myFolderName = getExternalStorageDirectory() + "/Derek/";
         String myFileName = "Bleep.CSV";
 
         // if the folder doesn't exist, create it
+        readAndParseFile(myFolderName, myFileName);
+    }
+
+    public void readAndParseFile(String myFolderName, String myFileName) throws IOException {
         if (!dir_exists(myFolderName)) {
             File dir = new File(myFolderName);
             if (!dir.mkdirs())
@@ -127,8 +138,8 @@ public class MainActivity extends AppCompatActivity {
 
         TextView text = (TextView) progressBox.findViewById(R.id.tv1);
         text.setText("Downloading file from ... " + file_path);
-        cur_val = (TextView) progressBox.findViewById(R.id.cur_pg_tv);
-        cur_val.setText("Starting download...");
+        curVal = (TextView) progressBox.findViewById(R.id.cur_pg_tv);
+        curVal.setText("Starting download...");
         progressBox.show();
 
         progressBar = (ProgressBar) progressBox.findViewById(R.id.progress_bar);
@@ -142,17 +153,14 @@ public class MainActivity extends AppCompatActivity {
             byte[] buffer = new byte[1024];
             int bufferLength = 0;
 
-            //set the path where we want to save the file
-//            File SDCardRoot = Environment.getExternalStorageDirectory();
-//            File derekDir = new File(SDCardRoot, "Derek/");
-//            //create a new file, to save the downloaded file
-//            File file = new File(derekDir,"downloaded_file.csv");
-//            FileOutputStream fileOutput = new FileOutputStream(file);
-
-            //FileOutputStream fileOutput = new FileOutputStream("Test.csv", Context.MODE_PRIVATE);
-            FileOutputStream fileOutput = openFileOutput("Test.csv", Context.MODE_PRIVATE);
             //setup the URL to download
             URL url = new URL(strURL);
+            File outFile = new File(strURL);
+            String strName = outFile.getName();
+            //FileOutputStream fileOutput = new FileOutputStream("Test.csv", Context.MODE_PRIVATE);
+            FileOutputStream fileOutput = openFileOutput(strName, Context.MODE_PRIVATE);
+
+
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
             urlConnection.setRequestMethod("GET");
@@ -181,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         progressBar.setProgress(downloadedSize);
                         float per = ((float)downloadedSize/totalSize) * 100;
-                        cur_val.setText("Downloaded " + downloadedSize + "KB / " + totalSize + "KB (" + (int)per + "%)" );
+                        curVal.setText("Downloaded " + downloadedSize + "KB / " + totalSize + "KB (" + (int)per + "%)" );
                     }
                 });
             }
@@ -189,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
             fileOutput.close();
             runOnUiThread(new Runnable() {
                 public void run() {
-                    // pb.dismiss(); // if you want close it..
+                    // progressBar.dismiss(); // if you want close it..
                 }
             });
         } catch (final MalformedURLException e) {
