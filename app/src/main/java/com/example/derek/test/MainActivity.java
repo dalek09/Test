@@ -16,13 +16,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Vector;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
@@ -78,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         //csvp.readLine(r);
 
         String myFolderName = getExternalStorageDirectory() + "/Derek/";
-        String myFileName = "Bleep.CSV";
+        String myFileName = "csv.csv";
 
         // if the folder doesn't exist, create it
         readAndParseFile(myFolderName, myFileName);
@@ -100,6 +104,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public static List<Product> readData() throws Exception {
+        List<Product> collection = new Vector<Product>();
+        File fileTemplate = new File("Derek/Bleep.CSV");
+        FileInputStream fis = new FileInputStream(fileTemplate);
+        Reader fr = new InputStreamReader(fis, "UTF-8");
+
+        List<String> values = CSVParse.readLine(fr);
+        while (values!=null) {
+            collection.add( Product.constructFromStrings(values) );
+            values = CSVParse.readLine(fr);
+        }
+        fr.close();
+        return collection;
+    }
     // return true if the specified directory exists
     private boolean dir_exists(String dirPath) {
         boolean ret = false;
