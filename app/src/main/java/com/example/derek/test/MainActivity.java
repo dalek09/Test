@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    // Get button - download a file from the internet
     public void getFile(View v) throws IOException {
         downloadedSize = 0;
 
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+    // Read button - read a file from local storage
     public void readFile(View v) throws IOException {
         CSVParse csvp = new CSVParse();
         //Reader r = new Reader();

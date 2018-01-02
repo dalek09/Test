@@ -49,18 +49,19 @@ public class CSVParse {
         while (ch == '\r') {
             ch = r.read();
         }
-        if (ch<0) {
+
+        if (ch < 0) { //UTF-8 ???????????????????????
             return null;
         }
         Vector<String> store = new Vector<String>();
         StringBuffer curVal = new StringBuffer();
-        boolean inquotes = false;
-        boolean started = false;
-        while (ch>=0) {
-            if (inquotes) {
-                started=true;
+        boolean bInQuotes = false;
+        boolean bStarted = false;
+        while (ch >= 0) {
+            if (bInQuotes) {
+                bStarted = true;
                 if (ch == '\"') {
-                    inquotes = false;
+                    bInQuotes = false;
                 }
                 else {
                     curVal.append((char)ch);
@@ -68,8 +69,8 @@ public class CSVParse {
             }
             else {
                 if (ch == '\"') {
-                    inquotes = true;
-                    if (started) {
+                    bInQuotes = true;
+                    if (bStarted) {
                         // if this is the second quote in a value, add a quote
                         // this is for the double quote in the middle of a value
                         curVal.append('\"');
@@ -78,10 +79,11 @@ public class CSVParse {
                 else if (ch == ',') {
                     store.add(curVal.toString());
                     curVal = new StringBuffer();
-                    started = false;
+                    bStarted = false;
                 }
                 else if (ch == '\r') {
-                    //ignore LF characters
+                    //ignore CR characters
+                    continue;
                 }
                 else if (ch == '\n') {
                     //end of a line, break out
