@@ -19,9 +19,7 @@ Year,Make,Model,Description,Price
 air, moon roof, loaded",4799.00
  */
 public class CSVParse {
-    public static void writeLine(Writer w, List<String> values)
-            throws Exception
-    {
+    public static void writeLine(Writer w, List<String> values) throws Exception {
         boolean firstVal = true;
         for (String val : values)  {
             if (!firstVal) {
