@@ -21,7 +21,7 @@ public class Progress {
 
     Progress(Activity activity){
         curActivity = activity;
-        curValText = (TextView) activity.findViewById(R.id.cur_pg_tv);
+//        curValText = (TextView) progressBox.findViewById(R.id.cur_pg_tv);    //we don't have a progressBox yet!
     }
 
     void setMaxSize(int size){maxSize = size;};
@@ -30,14 +30,16 @@ public class Progress {
         curSize = size;
 
         if(curValText == null)
-            curValText = (TextView) curActivity.findViewById(R.id.cur_pg_tv);
+            curValText = (TextView) progressBox.findViewById(R.id.cur_pg_tv);
 
         if(size == 0) {
             curValText.setText("Starting download...");
         }
         else {
+            String curSizeUnits =  curSize > 1000 ? "KB" : "B";
+            String maxSizeUnits =  maxSize > 1000 ? "KB" : "B";
             per = ((float) curSize / maxSize) * 100;
-            curValText.setText("Downloaded " + curSize + "KB / " + maxSize + "KB (" + (int) per + "%)");
+            curValText.setText("Downloaded " + curSize + curSizeUnits + " / " + maxSize + maxSizeUnits + " (" + (int)per + "%)");
         }
         progressBar.setProgress(curSize);
     };

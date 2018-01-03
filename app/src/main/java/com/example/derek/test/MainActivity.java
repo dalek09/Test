@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
             runOnUiThread(new Runnable() {
                 public void run() {
-                    progress.progressBar.setMax(totalSize);
+                    progress.setMaxSize(totalSize);
                     progress.setCurSize(0);
                 }
             });
