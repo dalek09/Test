@@ -3,4 +3,5 @@
     <string name="GET_FILE_BUTTON">Get File</string>
     <string name="READ_FILE_BUTTON">Read File</string>
     <string name="TEST_MESSAGE">Hello Bleep</string>
+    <string name="READY_MESSAGE">Ready...</string>
 </resources>

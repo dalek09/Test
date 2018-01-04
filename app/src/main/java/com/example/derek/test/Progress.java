@@ -30,7 +30,7 @@ public class Progress {
         curSize = size;
 
         if(curValText == null)
-            curValText = (TextView) progressBox.findViewById(R.id.cur_pg_tv);
+            curValText = (TextView) progressBox.findViewById(R.id.progress_text_2);
 
         if(size == 0) {
             curValText.setText("Starting download...");
@@ -50,7 +50,7 @@ public class Progress {
         progressBox.setContentView(R.layout.progress_dialog);
         progressBox.setTitle("Download Progress");
 
-        TextView text = (TextView) progressBox.findViewById(R.id.tv1);
+        TextView text = (TextView) progressBox.findViewById(R.id.progress_text_1);
         text.setText("Downloading file from ... " + file_path);
         progressBox.show();
 

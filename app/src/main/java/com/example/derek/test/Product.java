@@ -1,5 +1,7 @@
 package com.example.derek.test;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 import java.util.Vector;
 
@@ -30,6 +32,7 @@ public class Product {
     public Product(int id, String sDescription, float fCostPrice, float fSellPrice) {
     }
 
+    @NonNull
     public static Product constructFromStrings(List<String> values) {
 
         int     _ID              = Integer.parseInt(values.get(0));

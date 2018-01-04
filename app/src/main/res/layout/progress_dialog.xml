@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_root"
     android:orientation="vertical"
     android:layout_width="fill_parent"
@@ -8,22 +9,21 @@
     >
 
     <TextView
-        android:id="@+id/tv1"
+        android:id="@+id/progress_text_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/progressTextMain"
-        android:text="hello"
         android:textStyle="bold"
-        />
+        tools:text="@string/READY_MESSAGE" />
 
     <TextView
-        android:id="@+id/cur_pg_tv"
+        android:id="@+id/progress_text_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/progressTextURL"
-        android:text="hello"
         android:layout_marginTop="5dp"
-        android:textStyle="bold|italic"    />
+        android:textColor="@color/progressTextURL"
+        android:textStyle="bold|italic"
+        tools:text="@string/READY_MESSAGE" />
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="fill_parent"

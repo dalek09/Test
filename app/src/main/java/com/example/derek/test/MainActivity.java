@@ -65,31 +65,51 @@ public class MainActivity extends AppCompatActivity {
         //Reader r = new Reader();
         //csvp.readLine(r);
 
-        String myFolderName = getExternalStorageDirectory() + "/Derek/";
-        String myFileName = "csv.csv";
+        //String myFolderName = getExternalStorageDirectory() + "/Derek/";
+        final String myFileName = "csv.csv";
 
         // if the folder doesn't exist, create it
-        readAndParseFile(myFolderName, myFileName);
+        //readAndParseFile(myFolderName, myFileName);
+        new Thread(new Runnable() {
+            public void run() {
+                readAndParseFile(myFileName);
+            }
+        }).start();
+
+
     }
 
-    public void readAndParseFile(String myFolderName, String myFileName) throws IOException {
-        if (!toolbox.dir_exists(myFolderName)) {
-            File dir = new File(myFolderName);
-            if (!dir.mkdirs())
-                throw new IOException("Cannot make directory: " + myFolderName);
-        }
+    //public void readAndParseFile(String myFileName) throws IOException {
+    public void readAndParseFile(String sFileName) {
 
-        String fullName = myFolderName + myFileName;
-        File myFile = new File(fullName);
+        //File myFile = new File(myFileName);
         try {
-            myFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+            readData(sFileName);
+        }
+        catch (Exception e)
+        {
+            toolbox.showError(e.toString());
         }
     }
 
-    public static List<Product> readData() throws Exception {
-        List<Product> collection = new Vector<Product>();
+//    public void readAndParseFile(String myFolderName, String myFileName) throws IOException {
+//        if (!toolbox.dir_exists(myFolderName)) {
+//            File dir = new File(myFolderName);
+//            if (!dir.mkdirs())
+//                throw new IOException("Cannot make directory: " + myFolderName);
+//        }
+//
+//        String fullName = myFolderName + myFileName;
+//        File myFile = new File(fullName);
+//        try {
+//            myFile.createNewFile();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    public static List<Product> readData(String sFileName) throws Exception {
+        List<Product> collection = new Vector<>();
         String myFolderName = getExternalStorageDirectory() + "/Derek/";
         String myFileName = "csv.csv";
 
