@@ -8,18 +8,14 @@ import java.util.Vector;
 /**
  * Created by Derek on 02/01/2018.
  */
+
 /*
 1997,"Product 1",7.99,15.99
-1999,"Product 2",9.99,18.99
-1999,"Product 3",8.99,17.99
+1999,"Product, 2",9.99,18.99
+1999,"Product ("embedded quote") 3",8.99,17.99
 1996,"Product 4",4.99,9.99
-air, Year,Make,Model,Description,Price
-Ford,E350,"ac, abs, moon",3000.00
-Chevy,"Venture ""Extended Edition""","",4900.00
-Chevy,"Venture ""Extended Edition, Very Large""",,5000.00
-Jeep,Grand Cherokee,"MUST SELL!
-moon roof, loaded",4799.00
- */
+*/
+
 
 
 

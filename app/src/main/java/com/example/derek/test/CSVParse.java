@@ -10,6 +10,7 @@ import java.util.Vector;
  * from article https://agiletribe.wordpress.com/2012/11/23/the-only-class-you-need-for-csv-files/
  */
 
+// expected to be bad
 /*
 Year,Make,Model,Description,Price
 1997,Ford,E350,"ac, abs, moon",3000.00
@@ -18,6 +19,15 @@ Year,Make,Model,Description,Price
 1996,Jeep,Grand Cherokee,"MUST SELL!
 air, moon roof, loaded",4799.00
  */
+
+// expected to be good
+/*
+1997,"Product 1",7.99,15.99
+1999,"Product, 2",9.99,18.99
+1999,"Product ("embedded quote") 3",8.99,17.99
+1996,"Product 4",4.99,9.99
+*/
+
 public class CSVParse {
     public static void writeLine(Writer w, List<String> values) throws Exception {
         boolean firstVal = true;
@@ -26,9 +36,9 @@ public class CSVParse {
                 w.write(",");
             }
             w.write("\"");
-            for (int i=0; i<val.length(); i++) {
+            for (int i = 0; i < val.length(); i++) {
                 char ch = val.charAt(i);
-                if (ch=='\"') {
+                if (ch == '\"') {
                     w.write("\"");  //extra quote
                 }
                 w.write(ch);
@@ -81,7 +91,6 @@ public class CSVParse {
                 }
                 else if (ch == '\r') {
                     //ignore CR characters
-                    continue;
                 }
                 else if (ch == '\n') {
                     //end of a line, break out

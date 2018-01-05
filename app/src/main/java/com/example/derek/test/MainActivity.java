@@ -21,24 +21,21 @@ import java.util.Vector;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
-
 public class MainActivity extends AppCompatActivity {
     Toolbox toolbox;
-    Progress progress;
+    //Progress progress;
     int totalSize;
-    int downloadedSize;
+    //int downloadedSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbox = new Toolbox(MainActivity.this);
-        progress = new Progress(MainActivity.this);
     }
 
     // Get button - download a file from the internet
     public void getFile(View v) throws IOException {
-        //progress.setCurSize(0);
 
         if (!toolbox.isExternalStorageWritable()){
             toolbox.showError("External Storage is not writable");
@@ -49,12 +46,15 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        final String urlBleep = "http://bleepcomputing.com/devel/csv.csv";
+        final Progress progress = new Progress(MainActivity.this);
+        //final String urlBleep = "http://bleepcomputing.com/devel/csv.csv";
+        final String urlBleep = "http://bleepcomputing.com/devel/bleepdemov7.zip";
         progress.showProgress(urlBleep);
+        //progress.setTitle("Download progress");
 
         new Thread(new Runnable() {
             public void run() {
-                downloadFile(urlBleep);
+                downloadFile(progress, urlBleep);
             }
         }).start();
     }
@@ -80,14 +80,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //public void readAndParseFile(String myFileName) throws IOException {
-    public void readAndParseFile(String sFileName) {
+    public void readAndParseFile(String myFileName) {
 
         //File myFile = new File(myFileName);
         try {
-            readData(sFileName);
+            List<Product> myProducts;
+            myProducts = readData(myFileName);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             toolbox.showError(e.toString());
         }
     }
@@ -108,14 +108,18 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //    }
 
-    public static List<Product> readData(String sFileName) throws Exception {
+    public  List<Product> readData(String sFileName) throws Exception {
         List<Product> collection = new Vector<>();
-        String myFolderName = getExternalStorageDirectory() + "/Derek/";
+        //String myFolderName = getExternalStorageDirectory() + "/Derek/";
         String myFileName = "csv.csv";
 
-        File fileTemplate = new File(myFolderName + myFileName);
-        FileInputStream fis = new FileInputStream(fileTemplate);
-        Reader fr = new InputStreamReader(fis, "UTF-8");
+        //File fileTemplate = new File(myFolderName + myFileName);
+        File fileTemplate = new File(myFileName);
+
+        FileInputStream fileInput = openFileInput(myFileName);
+
+       // FileInputStream fis = new FileInputStream(fileTemplate);
+        Reader fr = new InputStreamReader(fileInput, "UTF-8");
 
         List<String> values = CSVParse.readLine(fr);
         while (values!=null) {
@@ -126,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         return collection;
     }
 
-    void downloadFile(String strURL) {
+    void downloadFile(final Progress progress, String strURL) {
         try {
             //create a buffer...
             byte[] buffer = new byte[1024];
@@ -153,6 +157,11 @@ public class MainActivity extends AppCompatActivity {
 
             //this is the total size of the file which we are downloading
             totalSize = urlConnection.getContentLength();
+            progress.setTitle("Download progress");
+            progress.setMaxSize(totalSize);
+            progress.setCurSize(0);
+
+            //downloadedSize = 0;
 
 //            runOnUiThread(new Runnable() {
 //                public void run() {
@@ -160,20 +169,23 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            });
 
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    progress.setMaxSize(totalSize);
-                    progress.setCurSize(0);
-                }
-            });
+//            runOnUiThread(new Runnable() {
+//                public void run() {
+//                    progress.setMaxSize(totalSize);
+//                    progress.setCurSize(0);
+//                }
+//            });
 
             while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
                 fileOutput.write(buffer, 0, bufferLength);
-                downloadedSize += bufferLength;
+//                downloadedSize += bufferLength;
+                final int curChunkSize = bufferLength;
                 // update the progressbar //
                 runOnUiThread(new Runnable() {
                     public void run() {
-                progress.setCurSize(downloadedSize);
+                    //progress.setCurSize(downloadedSize);
+                    progress.addCurSize(curChunkSize);
+
                     //float per = ((float)downloadedSize / totalSize) * 100;
                     //curVal.setText("Downloaded " + downloadedSize + "KB / " + totalSize + "KB (" + (int)per + "%)" );
                     }
